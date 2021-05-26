@@ -18,6 +18,7 @@ class Game {
 
 	// rozgrywka
 	Player player;
+	std::vector <Entity> boulders;
 
 public:
 	void getPlayerInput();

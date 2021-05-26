@@ -22,7 +22,7 @@ Player::Player() {
 void Player::shakeShip() {
 	static bool shaking = false;
 	static int distance = 0;
-	static float oldX = 0;
+
 	static bool left = false;
 	static int counter = 0;
 	if (shaking == false) {
