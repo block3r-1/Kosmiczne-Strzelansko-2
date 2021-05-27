@@ -22,6 +22,7 @@ void Player::generateLaserInstance() {
 	if (laserShot == false) return;
 
 	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, 1000);
+	//Entity laser(laserTexture, 300, 300, 1000);
 	playerLasers.push_back(laser);
 
 }
@@ -108,7 +109,9 @@ void Player::update(float deltaTime, bool shaking) {
 
 	auto laserIterator = playerLasers.begin();
 	while (laserIterator != playerLasers.end()) {
+		laserIterator->setTexture(laserTexture);
 		laserIterator->up();
+		//laserIterator->setPosition(300, 300);
 		laserIterator->update(deltaTime);
 		if (laserIterator->getPosition().y < 0) {
 			laserIterator = playerLasers.erase(laserIterator);

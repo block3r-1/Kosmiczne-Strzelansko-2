@@ -23,9 +23,7 @@ Entity::Entity(const Entity& copied) {
 	this->sprite = copied.sprite;
 	this->texture = copied.texture;
 	sprite.setTexture(texture);
-	sprite.setOrigin(position);
 	sprite.setPosition(position);
-	this->setPosition(position.x, position.y);
 
 	this->speed = copied.speed;
 }
@@ -34,14 +32,12 @@ Entity::Entity(Texture entityTexture, float x, float y, float entitySpeed) {
 	texture = entityTexture;
 	sprite.setTexture(texture);
 	this->setPosition(x, y);
-	sprite.setOrigin(position);
 	speed = entitySpeed;
 }
 
 void Entity::setTexture(Texture entityTexture) {
 	texture = entityTexture;
 	sprite.setTexture(texture);
-	sprite.setOrigin(position);
 }
 
 void Entity::setPosition(float x, float y) {
