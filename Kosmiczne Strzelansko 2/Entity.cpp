@@ -1,13 +1,46 @@
 #include <SFML/Graphics.hpp>
 
 #include "Entity.h"
+#include "Resources.h"
 
-void Entity::setTexture(std::string textureName) {
+Entity::Entity() {
+	position.x = 0;
+	position.y = 0;
+	l = false;
+	r = false;
+	u = false;
+	d = false;
+	speed = 0;
+}
 
-	std::string texturePath = "textures\\" + textureName + ".png";
-	texture.loadFromFile(texturePath);
+Entity::Entity(const Entity& copied) {
+	this->position = copied.position;
+	this->l = copied.l;
+	this->r = copied.r;
+	this->u = copied.u;
+	this->d = copied.d;
+
+	this->sprite = copied.sprite;
+	this->texture = copied.texture;
 	sprite.setTexture(texture);
+	sprite.setOrigin(position);
+	sprite.setPosition(position);
+	this->setPosition(position.x, position.y);
 
+	this->speed = copied.speed;
+}
+
+Entity::Entity(Texture entityTexture, float x, float y, float entitySpeed) {
+	texture = entityTexture;
+	sprite.setTexture(texture);
+	this->setPosition(x, y);
+	sprite.setOrigin(position);
+	speed = entitySpeed;
+}
+
+void Entity::setTexture(Texture entityTexture) {
+	texture = entityTexture;
+	sprite.setTexture(texture);
 	sprite.setOrigin(position);
 }
 

@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 
 #include "Player.h"
+#include "Resources.h"
 
 using namespace sf;
 
@@ -11,6 +12,7 @@ class Game {
 	RenderWindow gameWindow;
 	Clock gameClock;
 	Event event;
+	Resources resourceContainer;
 
 	// tlo glownej planszy
 	Texture backgroundScreenTexture;

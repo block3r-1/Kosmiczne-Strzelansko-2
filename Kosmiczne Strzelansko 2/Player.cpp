@@ -1,8 +1,28 @@
 #include <random>
 
 #include "Player.h"
+#include "Resources.h"
+
+void Player::setLaserTexture(Texture newLaserTexture) {
+	laserTexture = newLaserTexture;
+}
 
 void Player::shootLaser() {
+	laserShot = true;
+}
+
+void Player::stopLaser() {
+	laserShot = false;
+}
+
+bool Player::getLaserState() {
+	return laserShot;
+}
+void Player::generateLaserInstance() {
+	if (laserShot == false) return;
+
+	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, 1000);
+	playerLasers.push_back(laser);
 
 }
 
@@ -13,8 +33,17 @@ Player::Player() {
 	score = 0;
 	laserPower = 5;
 
-	this->setTexture("ship100");
-	this->setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 230));
+	laserShot = false;
+	l = false;
+	r = false;
+	u = false;
+	d = false;
+
+
+//	this->setTexture("papaj");//("ship100");
+	//this->setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 230));
+
+//	this->setLaserTexture();
 	
 
 }
@@ -22,9 +51,9 @@ Player::Player() {
 void Player::shakeShip() {
 	static bool shaking = false;
 	static int distance = 0;
-
 	static bool left = false;
 	static int counter = 0;
+
 	if (shaking == false) {
 		std::random_device seed;
 		std::default_random_engine generator(seed());
@@ -54,13 +83,49 @@ void Player::shakeShip() {
 
 void Player::update(float deltaTime, bool shaking) {
 	if (shaking == false) {
-		if (l == true) this->moveLeft(speed * deltaTime);
-		if (r == true) this->moveRight(speed * deltaTime);
+		if (l == true) {
+			if (position.x < 0) return;
+			this->moveLeft(speed * deltaTime);
+		}
+		if (r == true) {
+			if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width) - 5) return;
+			this->moveRight(speed * deltaTime);
+		}
 		if (u == true) this->moveUp(speed * deltaTime);
 		if (d == true) this->moveDown(speed * deltaTime);
 	}
 	else {
-		if (l == true) this->moveLeft(shakingSpeed * deltaTime);
-		if (r == true) this->moveRight(shakingSpeed * deltaTime);
+		if (l == true) {
+			if (position.x < 0) return;
+			this->moveLeft(shakingSpeed * deltaTime);
+		}
+		if (r == true) {
+			if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width) - 5) return;
+			this->moveRight(shakingSpeed * deltaTime);
+		}
 	}
+	if(playerLasers.empty() == true) return;
+
+	auto laserIterator = playerLasers.begin();
+	while (laserIterator != playerLasers.end()) {
+		laserIterator->up();
+		laserIterator->update(deltaTime);
+		if (laserIterator->getPosition().y < 0) {
+			laserIterator = playerLasers.erase(laserIterator);
+		}
+		else {
+			laserIterator++;
+		}
+	}
+}
+
+Sprite Player::getLaserSprite(int number) {
+	Sprite empty;
+	if (playerLasers.empty() == true) return empty;
+
+	return playerLasers[number].getSprite();
+}
+
+int Player::getLaserCount() {
+	return playerLasers.size();
 }

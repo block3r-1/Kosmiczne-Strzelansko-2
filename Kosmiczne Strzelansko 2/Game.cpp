@@ -3,8 +3,20 @@
 
 #include "Game.h"
 #include "Player.h"
+#include "Resources.h"
+
+#define LASER_SPEED 0.3
 
 Game::Game() {
+
+	resourceContainer.loadPlayerTexture("papaj");
+	resourceContainer.loadBackgroundTexture("background16x");
+	resourceContainer.loadLaserTexture("kremowka");
+
+	player.setTexture(resourceContainer.getPlayerTexture());
+	player.setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 230));
+
+	player.setLaserTexture(resourceContainer.getLaserTexture());
 
 	// pobranie rozdzielczosci ekranu
 	Vector2 <int> screenResolution;
@@ -13,7 +25,7 @@ Game::Game() {
 	
 	// otwarcie okna
 	gameWindow.create(VideoMode(screenResolution.x, screenResolution.y), "KOSMICZNE STRZELANSKO"); //Style::Fullscreen);
-	backgroundScreenTexture.loadFromFile("textures\\background16x.png");
+	backgroundScreenTexture = resourceContainer.getBackgroundTexture();
 	backgroundScreen.setTexture(backgroundScreenTexture);
 
 }
@@ -23,7 +35,7 @@ Game::~Game() {
 }
 
 void Game::getPlayerInput() {
-
+	// ruch w lewo
 	if (Keyboard::isKeyPressed(Keyboard::A)) {
 		player.left();
 	}
@@ -31,6 +43,7 @@ void Game::getPlayerInput() {
 		player.leftStop();
 	}
 
+	// ruch w prawo
 	if (Keyboard::isKeyPressed(Keyboard::D)) {
 		player.right();
 	}
@@ -38,27 +51,44 @@ void Game::getPlayerInput() {
 		player.rightStop();
 	}
 
+	// strzal laserem
+	if (Keyboard::isKeyPressed(Keyboard::Space)) {
+		player.shootLaser();
+	}
+	else {
+		player.stopLaser();
+	}
+
+	// wyjscie z gry
 	while (gameWindow.pollEvent(event)) {
 		if (event.type == Event::Closed) gameWindow.close();
 		if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape) gameWindow.close();
-
-		//if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::W) player.moveUp(5);
-		//if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S) player.moveDown(5);
-		//if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) player.moveLeft(5);
-		//if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::D) player.moveRight(5);
 	}
 }
 
 void Game::drawWindowElements() {
 	gameWindow.draw(backgroundScreen);
 	gameWindow.draw(player.getSprite());
+	int laserCount = player.getLaserCount();
+	for (int i = 0; i < laserCount; i++) {
+		gameWindow.draw(player.getLaserSprite(i));
+	}
+	
 }
 
 void Game::updateGameState(float deltaTime) {
 	static bool shaking = false;
+	static float laserTimer = 0;
 	if (shaking == true) {
 		player.shakeShip();
 	}
+	if (player.getLaserState() == true) {
+		if (laserTimer > LASER_SPEED) {
+			player.generateLaserInstance();
+			laserTimer = 0;
+		}
+	}
+	laserTimer += deltaTime;
 	player.update(deltaTime, shaking);
 	shaking = !shaking;
 }

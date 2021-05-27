@@ -19,7 +19,10 @@ protected:
 	// wlasciwosci rozgrywki
 	float speed;
 public:
-	void setTexture(std::string textureName);
+	Entity();
+	Entity(const Entity& copied);
+	Entity(Texture entityTexture, float x, float y, float entitySpeed);
+	void setTexture(Texture entityTexture);
 	void setPosition(float x, float y);
 	Vector2<float> getPosition();
 	Sprite getSprite();
