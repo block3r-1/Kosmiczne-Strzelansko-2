@@ -9,8 +9,8 @@ Asteroid::Asteroid() {
 
 	std::random_device seed;
 	std::default_random_engine generator(seed());
-	std::uniform_int_distribution <int> xDistribution(400, 1500);
-	std::uniform_int_distribution <int> yDistribution(300, 800);
+	std::uniform_int_distribution <int> xDistribution(0, VideoMode::getDesktopMode().width);
+	std::uniform_int_distribution <int> yDistribution(0, VideoMode::getDesktopMode().height);
 	this->setPosition(xDistribution(seed), yDistribution(seed));
 
 	std::uniform_int_distribution <int> angleDistribution(0, 360);
@@ -25,6 +25,14 @@ Asteroid::Asteroid(int level) {
 	std::default_random_engine generator(seed());
 	std::uniform_int_distribution <int> angleDistribution(0, 360);
 	angle = angleDistribution(seed);
+}
+
+void Asteroid::hit() {
+	std::random_device seed;
+	std::default_random_engine generator(seed());
+	std::uniform_int_distribution <int> angleDistribution(0, 360);
+	angle = angleDistribution(seed);
+	this->update(0.01);
 }
 
 void Asteroid::update(float deltaTime) {

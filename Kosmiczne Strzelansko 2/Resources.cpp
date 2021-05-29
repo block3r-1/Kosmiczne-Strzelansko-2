@@ -10,6 +10,14 @@ void Resources::loadPlayerTexture(std::string textureName) {
 	playerTexture.loadFromFile(textureName);
 
 }
+
+void Resources::loadSecondPlayerTexture(std::string textureName) {
+	std::string texturePath = "textures\\" + textureName + ".png";
+	secondPlayerTexture.loadFromFile(texturePath);
+	secondPlayerTexture.loadFromFile(textureName);
+}
+
+
 void Resources::loadBackgroundTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
 	backgroundTexture.loadFromFile(texturePath);
@@ -31,9 +39,15 @@ void Resources::loadAsteroidTexture(std::string textureName) {
 Texture Resources::getPlayerTexture() {
 	return playerTexture;
 }
+
+Texture Resources::getSecondPlayerTexture() {
+	return secondPlayerTexture;
+}
+
 Texture Resources::getBackgroundTexture() {
 	return backgroundTexture;
 }
+
 Texture Resources::getLaserTexture() {
 	return laserTexture;
 }

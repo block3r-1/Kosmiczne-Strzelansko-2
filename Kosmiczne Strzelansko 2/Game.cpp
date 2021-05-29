@@ -6,10 +6,12 @@
 #include "Resources.h"
 
 #define LASER_SPEED 0.3
+#define ASTEROID_COUNT 100
 
 Game::Game() {
 
 	resourceContainer.loadPlayerTexture("papaj");
+	resourceContainer.loadSecondPlayerTexture("papajzly");
 	resourceContainer.loadBackgroundTexture("background16x");
 	resourceContainer.loadLaserTexture("kremowka");
 	resourceContainer.loadAsteroidTexture("pudzian40");
@@ -30,8 +32,8 @@ Game::Game() {
 	backgroundScreen.setTexture(backgroundScreenTexture);
 
 	//stworzeie tablicy na asteroidy
-	asteroids = new Asteroid[5];
-	for (int i = 0; i < 5; i++) {
+	asteroids = new Asteroid[ASTEROID_COUNT];
+	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		asteroids[i].setTexture(resourceContainer.getAsteroidTexture());
 	}
 
@@ -61,9 +63,11 @@ void Game::getPlayerInput() {
 	// strzal laserem
 	if (Keyboard::isKeyPressed(Keyboard::Space)) {
 		player.shootLaser();
+		player.setTexture(resourceContainer.getSecondPlayerTexture());
 	}
 	else {
 		player.stopLaser();
+		player.setTexture(resourceContainer.getPlayerTexture());
 	}
 
 	// wyjscie z gry
@@ -80,7 +84,7 @@ void Game::drawWindowElements() {
 	for (int i = 0; i < laserCount; i++) {
 		gameWindow.draw(player.getLaserSprite(i));
 	}
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		gameWindow.draw(asteroids[i].getSprite());
 	}
 }
@@ -88,14 +92,30 @@ void Game::drawWindowElements() {
 void Game::collisionDetection() {
 	FloatRect asteroidBox;
 	FloatRect laserBox;
+
+	// asteroidy i lasery
 	for (int i = 0; i < player.getLaserCount(); i++) {
 		laserBox = player.getLaserBounds(i);
-			for (int j = 0; j < 5; j++) {
+			for (int j = 0; j < ASTEROID_COUNT; j++) {
 				asteroidBox = asteroids[j].getSprite().getGlobalBounds();
 				if (laserBox.intersects(asteroidBox)) {
 					asteroids[j].setPosition(-500, -500);
 				}
 			}
+	}
+
+	// asteroidy i asteroidy
+	FloatRect secondAsteroidBox;
+	for (int i = 0; i < ASTEROID_COUNT; i++) {
+		asteroidBox = asteroids[i].getSprite().getGlobalBounds();
+		for (int j = 0; j < ASTEROID_COUNT; j++) {
+			secondAsteroidBox = asteroids[j].getSprite().getGlobalBounds();
+			if (asteroidBox.intersects(secondAsteroidBox)) {
+				if (asteroidBox == secondAsteroidBox) break;
+				asteroids[i].hit();
+				asteroids[j].hit();
+			}
+		}
 	}
 }
 
@@ -114,7 +134,7 @@ void Game::updateGameState(float deltaTime) {
 	laserTimer += deltaTime;
 	player.update(deltaTime, shaking);
 	shaking = !shaking;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		asteroids[i].update(deltaTime);
 	}
 

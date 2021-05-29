@@ -10,5 +10,6 @@ class Asteroid : public Entity {
 public:
 	Asteroid();
 	Asteroid(int level);
+	void hit();
 	void update(float deltaTime);
 };
