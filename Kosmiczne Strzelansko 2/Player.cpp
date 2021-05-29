@@ -21,7 +21,7 @@ bool Player::getLaserState() {
 void Player::generateLaserInstance() {
 	if (laserShot == false) return;
 
-	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, 1000);
+	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, 700);
 	//Entity laser(laserTexture, 300, 300, 1000);
 	playerLasers.push_back(laser);
 
@@ -131,4 +131,8 @@ Sprite Player::getLaserSprite(int number) {
 
 int Player::getLaserCount() {
 	return playerLasers.size();
+}
+
+FloatRect Player::getLaserBounds(int number) {
+	return playerLasers[number].getSprite().getGlobalBounds();
 }

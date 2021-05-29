@@ -20,6 +20,7 @@ public:
 	bool getLaserState();
 	void generateLaserInstance();
 	int getLaserCount();
+	FloatRect getLaserBounds(int number);
 	void shakeShip();
 	void update(float deltaTime, bool shaking);
 };

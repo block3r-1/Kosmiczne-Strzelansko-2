@@ -12,6 +12,7 @@ Game::Game() {
 	resourceContainer.loadPlayerTexture("papaj");
 	resourceContainer.loadBackgroundTexture("background16x");
 	resourceContainer.loadLaserTexture("kremowka");
+	resourceContainer.loadAsteroidTexture("pudzian40");
 
 	player.setTexture(resourceContainer.getPlayerTexture());
 	player.setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 230));
@@ -28,10 +29,16 @@ Game::Game() {
 	backgroundScreenTexture = resourceContainer.getBackgroundTexture();
 	backgroundScreen.setTexture(backgroundScreenTexture);
 
+	//stworzeie tablicy na asteroidy
+	asteroids = new Asteroid[5];
+	for (int i = 0; i < 5; i++) {
+		asteroids[i].setTexture(resourceContainer.getAsteroidTexture());
+	}
+
 }
 
 Game::~Game() {
-
+	delete[] asteroids;
 }
 
 void Game::getPlayerInput() {
@@ -73,7 +80,23 @@ void Game::drawWindowElements() {
 	for (int i = 0; i < laserCount; i++) {
 		gameWindow.draw(player.getLaserSprite(i));
 	}
-	
+	for (int i = 0; i < 5; i++) {
+		gameWindow.draw(asteroids[i].getSprite());
+	}
+}
+
+void Game::collisionDetection() {
+	FloatRect asteroidBox;
+	FloatRect laserBox;
+	for (int i = 0; i < player.getLaserCount(); i++) {
+		laserBox = player.getLaserBounds(i);
+			for (int j = 0; j < 5; j++) {
+				asteroidBox = asteroids[j].getSprite().getGlobalBounds();
+				if (laserBox.intersects(asteroidBox)) {
+					asteroids[j].setPosition(-500, -500);
+				}
+			}
+	}
 }
 
 void Game::updateGameState(float deltaTime) {
@@ -91,6 +114,10 @@ void Game::updateGameState(float deltaTime) {
 	laserTimer += deltaTime;
 	player.update(deltaTime, shaking);
 	shaking = !shaking;
+	for (int i = 0; i < 5; i++) {
+		asteroids[i].update(deltaTime);
+	}
+
 }
 
 void Game::startGame() {
@@ -98,6 +125,7 @@ void Game::startGame() {
 		Time deltaTime = gameClock.restart();
 
 		this->getPlayerInput();
+		this->collisionDetection();
 		this->updateGameState(deltaTime.asSeconds());
 		this->drawWindowElements();
 

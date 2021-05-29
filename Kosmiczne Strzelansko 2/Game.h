@@ -4,6 +4,7 @@
 
 #include "Player.h"
 #include "Resources.h"
+#include "Asteroid.h"
 
 using namespace sf;
 
@@ -20,11 +21,13 @@ class Game {
 
 	// rozgrywka
 	Player player;
-	std::vector <Entity> boulders;
+	//std::vector <Asteroid> asteroids;
+	Asteroid* asteroids;
 
 public:
 	void getPlayerInput();
 	void updateGameState(float deltaTime);
+	void collisionDetection();
 	void drawWindowElements();
 	void startGame();
 
