@@ -38,6 +38,7 @@ Entity::Entity(Texture entityTexture, float x, float y, float entitySpeed) {
 void Entity::setTexture(Texture entityTexture) {
 	texture = entityTexture;
 	sprite.setTexture(texture);
+	sprite.setOrigin((sprite.getTexture()->getSize().x) / 2, (sprite.getTexture()->getSize().y) / 2);
 }
 
 void Entity::setPosition(float x, float y) {

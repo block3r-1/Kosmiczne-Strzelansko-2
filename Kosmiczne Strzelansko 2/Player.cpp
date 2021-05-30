@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "Resources.h"
 
+#define LASER_VELOCITY 700
+
 void Player::setLaserTexture(Texture newLaserTexture) {
 	laserTexture = newLaserTexture;
 }
@@ -21,8 +23,7 @@ bool Player::getLaserState() {
 void Player::generateLaserInstance() {
 	if (laserShot == false) return;
 
-	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, 700);
-	//Entity laser(laserTexture, 300, 300, 1000);
+	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, LASER_VELOCITY);
 	playerLasers.push_back(laser);
 
 }
@@ -30,22 +31,14 @@ void Player::generateLaserInstance() {
 Player::Player() {
 	speed = 800;
 	shakingSpeed = 100;
-	lives = 5;
+	lives = 50;
 	score = 0;
-	laserPower = 5;
 
 	laserShot = false;
 	l = false;
 	r = false;
 	u = false;
 	d = false;
-
-
-//	this->setTexture("papaj");//("ship100");
-	//this->setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 230));
-
-//	this->setLaserTexture();
-	
 
 }
 
@@ -66,14 +59,14 @@ void Player::shakeShip() {
 	else if (shaking == true) {
 		if (left == true) {
 			this->left();
-			if (counter > (distance + 1000)) {
+			if (counter > (distance + 200)) {
 				left = false;
 				counter = 0;
 			}
 		}
 		else {
 			this->right();
-			if (counter > (distance + 1000)) {
+			if (counter > (distance + 200)) {
 				left = true;
 				counter = 0;
 			}
@@ -89,7 +82,7 @@ void Player::update(float deltaTime, bool shaking) {
 			this->moveLeft(speed * deltaTime);
 		}
 		if (r == true) {
-			if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width) - 5) return;
+			if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width)) return;
 			this->moveRight(speed * deltaTime);
 		}
 		if (u == true) this->moveUp(speed * deltaTime);
@@ -101,7 +94,7 @@ void Player::update(float deltaTime, bool shaking) {
 			this->moveLeft(shakingSpeed * deltaTime);
 		}
 		if (r == true) {
-			if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width) - 5) return;
+			if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width)) return;
 			this->moveRight(shakingSpeed * deltaTime);
 		}
 	}
@@ -111,7 +104,6 @@ void Player::update(float deltaTime, bool shaking) {
 	while (laserIterator != playerLasers.end()) {
 		laserIterator->setTexture(laserTexture);
 		laserIterator->up();
-		//laserIterator->setPosition(300, 300);
 		laserIterator->update(deltaTime);
 		if (laserIterator->getPosition().y < 0) {
 			laserIterator = playerLasers.erase(laserIterator);
@@ -135,4 +127,8 @@ int Player::getLaserCount() {
 
 FloatRect Player::getLaserBounds(int number) {
 	return playerLasers[number].getSprite().getGlobalBounds();
+}
+
+void Player::decreaseLives() {
+	lives -= 5;
 }

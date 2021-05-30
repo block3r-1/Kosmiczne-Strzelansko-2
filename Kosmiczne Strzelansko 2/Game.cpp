@@ -4,9 +4,10 @@
 #include "Game.h"
 #include "Player.h"
 #include "Resources.h"
+#include "Asteroid.h"
 
 #define LASER_SPEED 0.3
-#define ASTEROID_COUNT 100
+#define ASTEROID_COUNT 40
 
 Game::Game() {
 
@@ -17,7 +18,7 @@ Game::Game() {
 	resourceContainer.loadAsteroidTexture("pudzian40");
 
 	player.setTexture(resourceContainer.getPlayerTexture());
-	player.setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 230));
+	player.setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 180));
 
 	player.setLaserTexture(resourceContainer.getLaserTexture());
 
@@ -31,12 +32,11 @@ Game::Game() {
 	backgroundScreenTexture = resourceContainer.getBackgroundTexture();
 	backgroundScreen.setTexture(backgroundScreenTexture);
 
-	//stworzeie tablicy na asteroidy
+	// stworzenie tablicy na asteroidy
 	asteroids = new Asteroid[ASTEROID_COUNT];
 	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		asteroids[i].setTexture(resourceContainer.getAsteroidTexture());
 	}
-
 }
 
 Game::~Game() {
@@ -86,6 +86,7 @@ void Game::drawWindowElements() {
 	}
 	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		gameWindow.draw(asteroids[i].getSprite());
+
 	}
 }
 
@@ -108,6 +109,10 @@ void Game::collisionDetection() {
 	FloatRect secondAsteroidBox;
 	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		asteroidBox = asteroids[i].getSprite().getGlobalBounds();
+		if (asteroidBox.intersects(player.getSprite().getGlobalBounds())) {
+			player.decreaseLives();
+			asteroids[i].setPosition(-500, -500);
+		}
 		for (int j = 0; j < ASTEROID_COUNT; j++) {
 			secondAsteroidBox = asteroids[j].getSprite().getGlobalBounds();
 			if (asteroidBox.intersects(secondAsteroidBox)) {

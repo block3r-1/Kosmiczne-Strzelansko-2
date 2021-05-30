@@ -5,7 +5,7 @@
 class Player : public Entity {
 	int lives;
 	int score;
-	int laserPower;
+
 	float shakingSpeed;
 	bool laserShot;
 	std::vector <Entity> playerLasers;
@@ -22,5 +22,6 @@ public:
 	int getLaserCount();
 	FloatRect getLaserBounds(int number);
 	void shakeShip();
+	void decreaseLives();
 	void update(float deltaTime, bool shaking);
 };

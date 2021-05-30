@@ -21,7 +21,6 @@ class Game {
 
 	// rozgrywka
 	Player player;
-	//std::vector <Asteroid> asteroids;
 	Asteroid* asteroids;
 
 public:
