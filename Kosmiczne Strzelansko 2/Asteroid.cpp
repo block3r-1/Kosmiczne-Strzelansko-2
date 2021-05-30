@@ -46,6 +46,7 @@ Asteroid::Asteroid(int level) {
 }
 
 void Asteroid::hit() {
+
 	std::random_device seed;
 	std::default_random_engine generator(seed());
 	//std::uniform_int_distribution <int> angleDistribution((angle - 60), (angle + 60));

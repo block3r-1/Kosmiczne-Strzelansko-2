@@ -98,7 +98,10 @@ void Player::update(float deltaTime, bool shaking) {
 			this->moveRight(shakingSpeed * deltaTime);
 		}
 	}
-	if(playerLasers.empty() == true) return;
+}
+
+void Player::updateLasers(float deltaTime) {
+	if (playerLasers.empty() == true) return;
 
 	auto laserIterator = playerLasers.begin();
 	while (laserIterator != playerLasers.end()) {

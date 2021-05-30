@@ -17,6 +17,11 @@ void Resources::loadSecondPlayerTexture(std::string textureName) {
 	secondPlayerTexture.loadFromFile(textureName);
 }
 
+void Resources::loadAlienTexture(std::string textureName) {
+	std::string texturePath = "textures\\" + textureName + ".png";
+	alienTexture.loadFromFile(texturePath);
+	alienTexture.loadFromFile(textureName);
+}
 
 void Resources::loadBackgroundTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
@@ -42,6 +47,10 @@ Texture Resources::getPlayerTexture() {
 
 Texture Resources::getSecondPlayerTexture() {
 	return secondPlayerTexture;
+}
+
+Texture Resources::getAlienTexture() {
+	return alienTexture;
 }
 
 Texture Resources::getBackgroundTexture() {

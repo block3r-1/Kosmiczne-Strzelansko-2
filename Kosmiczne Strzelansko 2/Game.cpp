@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Resources.h"
 #include "Asteroid.h"
+#include "Alien.h"
 
 #define LASER_SPEED 0.3
 #define ASTEROID_COUNT 40
@@ -13,6 +14,7 @@ Game::Game() {
 
 	resourceContainer.loadPlayerTexture("papaj");
 	resourceContainer.loadSecondPlayerTexture("papajzly");
+	resourceContainer.loadAlienTexture("papajokrutnik");
 	resourceContainer.loadBackgroundTexture("background16x");
 	resourceContainer.loadLaserTexture("kremowka");
 	resourceContainer.loadAsteroidTexture("pudzian40");
@@ -21,6 +23,11 @@ Game::Game() {
 	player.setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 180));
 
 	player.setLaserTexture(resourceContainer.getLaserTexture());
+
+	alien.setTexture(resourceContainer.getAlienTexture());
+	alien.setPosition(500, 100);
+
+	alien.setLaserTexture(resourceContainer.getLaserTexture());
 
 	// pobranie rozdzielczosci ekranu
 	Vector2 <int> screenResolution;
@@ -88,6 +95,11 @@ void Game::drawWindowElements() {
 		gameWindow.draw(asteroids[i].getSprite());
 
 	}
+	gameWindow.draw(alien.getSprite());
+	int alienLaserCount = alien.getLaserCount();
+	for (int i = 0; i < alienLaserCount; i++) {
+		gameWindow.draw(alien.getLaserSprite(i));
+	}
 }
 
 void Game::collisionDetection() {
@@ -138,11 +150,12 @@ void Game::updateGameState(float deltaTime) {
 	}
 	laserTimer += deltaTime;
 	player.update(deltaTime, shaking);
+	player.updateLasers(deltaTime);
 	shaking = !shaking;
 	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		asteroids[i].update(deltaTime);
 	}
-
+	alien.updateAI(deltaTime, player.getPosition().x, shaking);
 }
 
 void Game::startGame() {

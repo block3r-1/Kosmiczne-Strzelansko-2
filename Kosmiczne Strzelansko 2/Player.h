@@ -3,6 +3,7 @@
 #include "Entity.h"
 
 class Player : public Entity {
+protected:
 	int lives;
 	int score;
 
@@ -23,5 +24,6 @@ public:
 	FloatRect getLaserBounds(int number);
 	void shakeShip();
 	void decreaseLives();
+	void updateLasers(float deltaTime);
 	void update(float deltaTime, bool shaking);
 };

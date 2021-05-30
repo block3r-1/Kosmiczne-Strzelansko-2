@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Resources.h"
 #include "Asteroid.h"
+#include "Alien.h"
 
 using namespace sf;
 
@@ -22,6 +23,7 @@ class Game {
 	// rozgrywka
 	Player player;
 	Asteroid* asteroids;
+	Alien alien;
 
 public:
 	void getPlayerInput();
