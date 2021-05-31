@@ -1,9 +1,12 @@
 #include <random>
+#include <iostream>
 
 #include "Alien.h"
 
 #define LASER_TIME 0.5
 #define ACTION_TIME 0.5
+#define FOLLOW_INTERVAL 0.1
+
 #define AI_CHANCE0 50
 #define AI_CHANCE1 25
 #define AI_CHANCE2 75
@@ -100,6 +103,10 @@ void Alien::makeAction(float deltaTime, int xPlayer) {
 	std::random_device seed;
 	std::default_random_engine generator(seed());
 
+	static float followTimer = 0; // dlugosc aktualnego sledzenia (jak dotad)
+	static float followDuration = 0; // dlugosc aktualnego sledzenia (przy ktorej sledzenie sie zakonczy)
+	static float followInterval = 0; // licznik odliczajacy czas pomiedzy kolejnymi sledzeniami
+
 	// STRZELANIE LASERAMI
 	std::uniform_int_distribution <int> laserChance(0, 100);
 	int laserPercentage = laserChance(seed);
@@ -119,7 +126,40 @@ void Alien::makeAction(float deltaTime, int xPlayer) {
 	}
 
 	// SLEDZENIE GRACZA
+	if (followInterval > FOLLOW_INTERVAL) {
+		if (isFollowing == false) {
+			std::uniform_int_distribution <int> followChance(0, 100);
+			int followPercentage = followChance(seed);
 
+			std::uniform_int_distribution <int> followTime(0, 10);
+			followDuration = 0.1;//followTime(seed) / 100;
+
+			switch (AItype) {
+			case 0: // normal - 30%
+				if (followPercentage < (AI_CHANCE0 - 20)) isFollowing = true;
+				break;
+			case 1: // mild - 15%
+				if (followPercentage < (AI_CHANCE1 - 10)) isFollowing = true;
+				break;
+			case 2: // furious - 45% szans
+				if (followPercentage < (AI_CHANCE2 - 30)) isFollowing = true;
+				break;
+			}
+		}
+	}
+	if(isFollowing == true) {
+		followInterval = 0;
+		this->follow(xPlayer);
+		std::cout << "FOLLOWING" << std::endl;
+		if (followTimer > followDuration) {
+			isFollowing = false;
+			followTimer = 0;
+			followInterval = 0;
+		}
+		followTimer += deltaTime;
+	}
+	followInterval += deltaTime;
+	std::cout << "FOLLOW INTERVAL: " << followInterval << std::endl;
 }
 
 void Alien::updateAI(float deltaTime, int xPlayer, bool shaking) {
@@ -140,27 +180,27 @@ void Alien::updateAI(float deltaTime, int xPlayer, bool shaking) {
 		this->makeAction(deltaTime, xPlayer);
 		AIcounter = 0;
 	}
-
-	sideMovement = true;
-	if (sideMovement == true) {
-		if (sideMovementDir == true) { // w lewo
-			this->left();
-			this->rightStop();
-		}
-		else { // w prawo
-			this->right();
-			this->leftStop();
-		}
-		if (position.x < 200) sideMovementDir = false;
-		if (position.x > (VideoMode::getDesktopMode().width - 200)) sideMovementDir = true;
-	}
-
-	if (laserShot == true) {
-		if (laserTimer > LASER_TIME) {
-			this->generateLaserInstance(laserSpeed);
-			laserTimer = 0;
+	if (isFollowing == false) {
+		sideMovement = true;
+		if (sideMovement == true) {
+			if (sideMovementDir == true) { // w lewo
+				this->left();
+				this->rightStop();
+			}
+			else { // w prawo
+				this->right();
+				this->leftStop();
+			}
+			if (position.x < 200) sideMovementDir = false;
+			if (position.x > (VideoMode::getDesktopMode().width - 200)) sideMovementDir = true;
 		}
 	}
+		if (laserShot == true) {
+			if (laserTimer > LASER_TIME) {
+				this->generateLaserInstance(laserSpeed);
+				laserTimer = 0;
+			}
+		}
 	laserTimer += deltaTime;
 
 	this->updateLasers(deltaTime);
