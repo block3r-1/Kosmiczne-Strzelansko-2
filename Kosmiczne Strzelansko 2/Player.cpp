@@ -3,8 +3,6 @@
 #include "Player.h"
 #include "Resources.h"
 
-#define LASER_VELOCITY 700
-
 void Player::setLaserTexture(Texture newLaserTexture) {
 	laserTexture = newLaserTexture;
 }
@@ -20,10 +18,10 @@ void Player::stopLaser() {
 bool Player::getLaserState() {
 	return laserShot;
 }
-void Player::generateLaserInstance() {
+void Player::generateLaserInstance(int laserSpeed) {
 	if (laserShot == false) return;
 
-	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, LASER_VELOCITY);
+	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, laserSpeed);
 	playerLasers.push_back(laser);
 
 }

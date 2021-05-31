@@ -3,13 +3,21 @@
 #include "Alien.h"
 
 #define LASER_TIME 0.5
+#define ACTION_TIME 0.5
+#define AI_CHANCE0 50
+#define AI_CHANCE1 25
+#define AI_CHANCE2 75
 
 Alien::Alien() {
 	std::random_device seed;
 	std::default_random_engine generator(seed());
 
-	std::uniform_int_distribution <int> behaviour(0, 2);
-	AItype = behaviour(seed);
+	std::uniform_int_distribution <int> behaviour(0, 100);
+	int typeToAssign = behaviour(seed);
+	if (typeToAssign > 0 && typeToAssign < 33) AItype = 0; // normal
+	else if (typeToAssign > 33 && typeToAssign < 66) AItype = 1; // mild;
+	else if (typeToAssign > 66 && typeToAssign < 100) AItype = 2; // furious
+	else AItype = 0;
 
 	isFollowing = false;
 	sideMovement = false;
@@ -18,7 +26,21 @@ Alien::Alien() {
 	furiousShooting = false;
 	replyShooting = false;
 
-	speed = 500;
+	switch (AItype) {
+	case 0: // normal
+		speed = 700;
+		laserSpeed = 700;
+		break;
+	case 1: // mild
+		speed = 450;
+		laserSpeed = 500;
+		break;
+	case 2: // furious
+		speed = 800;
+		laserSpeed = 1200;
+		break;
+	}
+	//speed = 500;
 	shakingSpeed = 50;
 	lives = 0;
 	score = 0;
@@ -74,7 +96,37 @@ void Alien::updateLasers(float deltaTime) {
 	}
 }
 
+void Alien::makeAction(float deltaTime, int xPlayer) {
+	std::random_device seed;
+	std::default_random_engine generator(seed());
+
+	// STRZELANIE LASERAMI
+	std::uniform_int_distribution <int> laserChance(0, 100);
+	int laserPercentage = laserChance(seed);
+	switch (AItype) {
+	case 0: // normal
+		if (laserPercentage < AI_CHANCE0) this->shootLaser();
+		else this->stopLaser();
+		break;
+	case 1: // mild
+		if (laserPercentage < AI_CHANCE1) this->shootLaser();
+		else this->stopLaser();
+		break;
+	case 2: // furious
+		if (laserPercentage < AI_CHANCE2) this->shootLaser();
+		else this->stopLaser();
+		break;
+	}
+
+	// SLEDZENIE GRACZA
+
+}
+
 void Alien::updateAI(float deltaTime, int xPlayer, bool shaking) {
+
+
+	static float AIcounter = 0;
+
 	static bool sideMovementDir = false;
 	static float laserTimer = 0;
 	if (runawayEnded == false) {
@@ -84,13 +136,11 @@ void Alien::updateAI(float deltaTime, int xPlayer, bool shaking) {
 			runawayEnded = true;
 		}
 	}
-	//if (laserTimer > deltaTime) {
-		this->shootLaser();
-	//	laserTimer = 0;
-	//}
-	//else {
-	//	this->stopLaser();
-	//}
+	if (AIcounter > ACTION_TIME) {
+		this->makeAction(deltaTime, xPlayer);
+		AIcounter = 0;
+	}
+
 	sideMovement = true;
 	if (sideMovement == true) {
 		if (sideMovementDir == true) { // w lewo
@@ -107,7 +157,7 @@ void Alien::updateAI(float deltaTime, int xPlayer, bool shaking) {
 
 	if (laserShot == true) {
 		if (laserTimer > LASER_TIME) {
-			this->generateLaserInstance();
+			this->generateLaserInstance(laserSpeed);
 			laserTimer = 0;
 		}
 	}
@@ -115,4 +165,5 @@ void Alien::updateAI(float deltaTime, int xPlayer, bool shaking) {
 
 	this->updateLasers(deltaTime);
 	this->update(deltaTime, shaking);
+	AIcounter += deltaTime;
 }

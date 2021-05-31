@@ -9,6 +9,7 @@
 
 #define LASER_SPEED 0.3
 #define ASTEROID_COUNT 40
+#define LASER_VELOCITY 700
 
 Game::Game() {
 
@@ -144,7 +145,7 @@ void Game::updateGameState(float deltaTime) {
 	}
 	if (player.getLaserState() == true) {
 		if (laserTimer > LASER_SPEED) {
-			player.generateLaserInstance();
+			player.generateLaserInstance(LASER_VELOCITY);
 			laserTimer = 0;
 		}
 	}

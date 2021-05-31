@@ -4,6 +4,7 @@
 
 class Alien : public Player {
 	int AItype; // 0 - normal, 1 - calm, 2 - furious
+	int laserSpeed;
 
 	bool isFollowing;
 	bool sideMovement;
@@ -21,6 +22,7 @@ public:
 	void runAway();
 	void sideToSide(int direction);
 	void hideAndSeek();
+	void makeAction(float deltaTime, int xPlayer);
 	void updateLasers(float deltaTime);
 	void updateAI(float deltaTime, int xPlayer, bool shaking);
 };

@@ -19,7 +19,7 @@ public:
 	void shootLaser();
 	void stopLaser();
 	bool getLaserState();
-	void generateLaserInstance();
+	void generateLaserInstance(int laserSpeed);
 	int getLaserCount();
 	FloatRect getLaserBounds(int number);
 	void shakeShip();
