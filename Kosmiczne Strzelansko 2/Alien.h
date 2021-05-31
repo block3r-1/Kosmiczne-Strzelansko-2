@@ -10,19 +10,13 @@ class Alien : public Player {
 	bool sideMovement;
 
 	bool runawayEnded;
-	bool hideNSeek;
 
-
-	bool mildShooting;
-	bool furiousShooting;
-	bool replyShooting;
 public:
 	Alien();
 	void follow(int xPlayer);
-	void runAway();
-	void sideToSide(int direction);
-	void hideAndSeek();
+	void runAway(bool direction);
 	void makeAction(float deltaTime, int xPlayer);
+	void destroyLaser(int number);
 	void updateLasers(float deltaTime);
-	void updateAI(float deltaTime, int xPlayer, bool shaking);
+	void updateAI(float deltaTime, int xPlayer);
 };

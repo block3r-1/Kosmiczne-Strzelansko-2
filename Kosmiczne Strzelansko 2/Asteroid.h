@@ -4,9 +4,8 @@
 
 class Asteroid : public Entity {
 	float rotationSpeed;
-	int size;
 	float angle;
-	int hitCount;
+	//int hitCount;
 	
 	bool outOfBounds;
 public:

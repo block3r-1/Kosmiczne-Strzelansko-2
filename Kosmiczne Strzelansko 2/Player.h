@@ -24,6 +24,8 @@ public:
 	FloatRect getLaserBounds(int number);
 	void shakeShip();
 	void decreaseLives();
+	int getScore();
+	int getLives();
 	void updateLasers(float deltaTime);
 	void update(float deltaTime, bool shaking);
 };

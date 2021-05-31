@@ -15,6 +15,10 @@ class Game {
 	Clock gameClock;
 	Event event;
 	Resources resourceContainer;
+	Font textFont;
+	Text logo;
+	Text score;
+	Text lives;
 
 	// tlo glownej planszy
 	Texture backgroundScreenTexture;
@@ -22,15 +26,18 @@ class Game {
 
 	// rozgrywka
 	Player player;
+	String playerName;
 	Asteroid* asteroids;
 	Alien alien;
 
 public:
+	void startScreen();
 	void getPlayerInput();
 	void updateGameState(float deltaTime);
 	void collisionDetection();
 	void drawWindowElements();
 	void startGame();
+	void endGame();
 
 	Game();
 	~Game();

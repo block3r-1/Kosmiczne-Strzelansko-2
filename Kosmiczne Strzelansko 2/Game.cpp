@@ -1,6 +1,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <Windows.h>
+
 #include "Game.h"
 #include "Player.h"
 #include "Resources.h"
@@ -12,16 +14,19 @@
 #define LASER_VELOCITY 700
 
 Game::Game() {
-
+	// zaladowanie calej bazy danych
 	resourceContainer.loadPlayerTexture("papaj");
 	resourceContainer.loadSecondPlayerTexture("papajzly");
 	resourceContainer.loadAlienTexture("papajokrutnik");
 	resourceContainer.loadBackgroundTexture("background16x");
 	resourceContainer.loadLaserTexture("kremowka");
 	resourceContainer.loadAsteroidTexture("pudzian40");
+	//resourceContainer.loadFont("impact");
+	textFont.loadFromFile("fonts\\ca.ttf");
 
+	// inicjalizacja gracza i kosmity
 	player.setTexture(resourceContainer.getPlayerTexture());
-	player.setPosition((VideoMode::getDesktopMode().width / 2) - 100, (VideoMode::getDesktopMode().height - 180));
+	player.setPosition((VideoMode::getDesktopMode().width / 2), (VideoMode::getDesktopMode().height - 100));
 
 	player.setLaserTexture(resourceContainer.getLaserTexture());
 
@@ -45,10 +50,39 @@ Game::Game() {
 	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		asteroids[i].setTexture(resourceContainer.getAsteroidTexture());
 	}
+
+	// inicjalizacja wszystkich obiektow tekstowych
+	logo.setFont(textFont);
+	score.setFont(textFont);
+	lives.setFont(textFont);
+
+	logo.setString("KOSMICZNE STRZELANSKO 2");
+	logo.setCharacterSize(100);
+	logo.setFillColor(Color::Green);
+	logo.setStyle(Text::Italic);
+	logo.setOrigin(logo.getGlobalBounds().width / 2, logo.getGlobalBounds().height / 2);
+	logo.setPosition(VideoMode::getDesktopMode().width / 2, VideoMode::getDesktopMode().height / 2);
+
+	score.setCharacterSize(50);
+	//score.setOrigin(score.getGlobalBounds().width / 2, score.getGlobalBounds().height / 2);
+	score.setPosition(30, (VideoMode::getDesktopMode().height - 70));
+	score.setFillColor(Color::Green);
+
+	lives.setCharacterSize(50);
+	//lives.setOrigin(lives.getGlobalBounds().width / 2, lives.getGlobalBounds().height / 2);
+	lives.setPosition((VideoMode::getDesktopMode().width - 450), (VideoMode::getDesktopMode().height - 70));
+	lives.setFillColor(Color::Red);
 }
 
 Game::~Game() {
 	delete[] asteroids;
+}
+
+void Game::startScreen() {
+	gameWindow.draw(backgroundScreen);
+	gameWindow.draw(logo);
+	gameWindow.display();
+	//Sleep(5000);
 }
 
 void Game::getPlayerInput() {
@@ -101,6 +135,10 @@ void Game::drawWindowElements() {
 	for (int i = 0; i < alienLaserCount; i++) {
 		gameWindow.draw(alien.getLaserSprite(i));
 	}
+	score.setString("SCORE: " + std::to_string(player.getScore()));
+	lives.setString("LIVES: " + std::to_string(player.getLives()));
+	gameWindow.draw(score);
+	gameWindow.draw(lives);
 }
 
 void Game::collisionDetection() {
@@ -118,14 +156,25 @@ void Game::collisionDetection() {
 			}
 	}
 
+	// lasery kosmity i gracz
+	for (int i = 0; i < alien.getLaserCount(); i++) {
+		laserBox = alien.getLaserBounds(i);
+			if (laserBox.intersects(player.getSprite().getGlobalBounds())) {
+				player.decreaseLives();
+				alien.destroyLaser(i);
+			}
+		}
+
 	// asteroidy i asteroidy
 	FloatRect secondAsteroidBox;
 	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		asteroidBox = asteroids[i].getSprite().getGlobalBounds();
+		// asteroidy i gracz
 		if (asteroidBox.intersects(player.getSprite().getGlobalBounds())) {
 			player.decreaseLives();
 			asteroids[i].setPosition(-500, -500);
 		}
+		// asteroidy i asteroidy c.d.
 		for (int j = 0; j < ASTEROID_COUNT; j++) {
 			secondAsteroidBox = asteroids[j].getSprite().getGlobalBounds();
 			if (asteroidBox.intersects(secondAsteroidBox)) {
@@ -156,10 +205,11 @@ void Game::updateGameState(float deltaTime) {
 	for (int i = 0; i < ASTEROID_COUNT; i++) {
 		asteroids[i].update(deltaTime);
 	}
-	alien.updateAI(deltaTime, player.getPosition().x, shaking);
+	alien.updateAI(deltaTime, player.getPosition().x);
 }
 
 void Game::startGame() {
+	this->startScreen();
 	while (gameWindow.isOpen()) {
 		Time deltaTime = gameClock.restart();
 

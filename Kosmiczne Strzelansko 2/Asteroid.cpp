@@ -13,8 +13,8 @@ Asteroid::Asteroid() {
 	speed = speedDistribution(seed);
 	rotationSpeed = rotationSpeedDistribution(seed);
 
-	size = 3;
-	hitCount = 0;
+	//size = 3;
+	//hitCount = 0;
 
 	std::uniform_int_distribution <int> xDistribution(0, VideoMode::getDesktopMode().width);
 	std::uniform_int_distribution <int> yDistribution(0, VideoMode::getDesktopMode().height);
@@ -36,8 +36,8 @@ Asteroid::Asteroid(int level) {
 	speed = speedDistribution(seed);
 	rotationSpeed = rotationSpeedDistribution(seed);
 
-	size = level;
-	hitCount = 0;
+	//size = level;
+	//hitCount = 0;
 
 	std::uniform_int_distribution <int> angleDistribution(0, 360);
 	angle = angleDistribution(seed);
@@ -53,12 +53,12 @@ void Asteroid::hit() {
 	angle = -angle;//angleDistribution(seed);
 
 	//this->update(0.007);
-	hitCount++;
+	//hitCount++;
 
-	if (hitCount > 1000) {
-		this->setPosition(-500, -500);
-		hitCount = 0;
-	}
+	//if (hitCount > 1000) {
+	//	this->setPosition(-500, -500);
+	//	hitCount = 0;
+	//}
 
 	position.x = position.x + speed * 0.004 * cos(angle * 3.14159 / 180);
 	position.y = position.y + speed * 0.004 * sin(angle * 3.14159 / 180);

@@ -76,11 +76,11 @@ void Player::shakeShip() {
 void Player::update(float deltaTime, bool shaking) {
 	if (shaking == false) {
 		if (l == true) {
-			if (position.x < 0) return;
+			//if (position.x < 0) return;
 			this->moveLeft(speed * deltaTime);
 		}
 		if (r == true) {
-			if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width)) return;
+			//if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width)) return;
 			this->moveRight(speed * deltaTime);
 		}
 		if (u == true) this->moveUp(speed * deltaTime);
@@ -88,11 +88,11 @@ void Player::update(float deltaTime, bool shaking) {
 	}
 	else {
 		if (l == true) {
-			if (position.x < 0) return;
+			//if (position.x < 0) return;
 			this->moveLeft(shakingSpeed * deltaTime);
 		}
 		if (r == true) {
-			if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width)) return;
+			//if (position.x > (VideoMode::getDesktopMode().width - sprite.getGlobalBounds().width)) return;
 			this->moveRight(shakingSpeed * deltaTime);
 		}
 	}
@@ -132,4 +132,12 @@ FloatRect Player::getLaserBounds(int number) {
 
 void Player::decreaseLives() {
 	lives -= 5;
+}
+
+int Player::getScore() {
+	return score;
+}
+
+int Player::getLives() {
+	return lives;
 }

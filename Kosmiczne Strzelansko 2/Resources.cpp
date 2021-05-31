@@ -7,38 +7,37 @@ using namespace sf;
 void Resources::loadPlayerTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
 	playerTexture.loadFromFile(texturePath);
-	playerTexture.loadFromFile(textureName);
 
 }
 
 void Resources::loadSecondPlayerTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
 	secondPlayerTexture.loadFromFile(texturePath);
-	secondPlayerTexture.loadFromFile(textureName);
 }
 
 void Resources::loadAlienTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
 	alienTexture.loadFromFile(texturePath);
-	alienTexture.loadFromFile(textureName);
 }
 
 void Resources::loadBackgroundTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
 	backgroundTexture.loadFromFile(texturePath);
-	backgroundTexture.loadFromFile(textureName);
 }
 
 void Resources::loadLaserTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
 	laserTexture.loadFromFile(texturePath);
-	laserTexture.loadFromFile(textureName);
 }
 
 void Resources::loadAsteroidTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
 	asteroidTexture.loadFromFile(texturePath);
-	asteroidTexture.loadFromFile(textureName);
+}
+
+void Resources::loadFont(std::string fontName) {
+	std::string fontPath = "fonts\\" + fontName + ".ttf";
+	textFont.loadFromFile(fontPath);
 }
 
 Texture Resources::getPlayerTexture() {
@@ -63,4 +62,8 @@ Texture Resources::getLaserTexture() {
 
 Texture Resources::getAsteroidTexture() {
 	return asteroidTexture;
+}
+
+Font Resources::getTextFont() {
+	return textFont;
 }
