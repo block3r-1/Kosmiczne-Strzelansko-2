@@ -134,6 +134,11 @@ void Player::decreaseLives() {
 	lives -= 5;
 }
 
+void Player::increaseScore() {
+	score += 25;
+	lives++;
+}
+
 int Player::getScore() {
 	return score;
 }

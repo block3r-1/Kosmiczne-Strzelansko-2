@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 
 #include <Windows.h>
+#include <fstream>
+#include <iostream>
 
 #include "Game.h"
 #include "Player.h"
@@ -15,12 +17,12 @@
 
 Game::Game() {
 	// zaladowanie calej bazy danych
-	resourceContainer.loadPlayerTexture("papaj");
-	resourceContainer.loadSecondPlayerTexture("papajzly");
-	resourceContainer.loadAlienTexture("papajokrutnik");
+	resourceContainer.loadPlayerTexture("ship100");
+	resourceContainer.loadSecondPlayerTexture("shipv2");
+	resourceContainer.loadAlienTexture("saucer2");
 	resourceContainer.loadBackgroundTexture("background16x");
-	resourceContainer.loadLaserTexture("kremowka");
-	resourceContainer.loadAsteroidTexture("pudzian40");
+	resourceContainer.loadLaserTexture("laserv2");
+	resourceContainer.loadAsteroidTexture("asteroid");
 	//resourceContainer.loadFont("impact");
 	textFont.loadFromFile("fonts\\ca.ttf");
 
@@ -82,7 +84,7 @@ void Game::startScreen() {
 	gameWindow.draw(backgroundScreen);
 	gameWindow.draw(logo);
 	gameWindow.display();
-	//Sleep(5000);
+	Sleep(5000);
 }
 
 void Game::getPlayerInput() {
@@ -152,6 +154,7 @@ void Game::collisionDetection() {
 				asteroidBox = asteroids[j].getSprite().getGlobalBounds();
 				if (laserBox.intersects(asteroidBox)) {
 					asteroids[j].setPosition(-500, -500);
+					player.increaseScore();
 				}
 			}
 	}
@@ -219,5 +222,16 @@ void Game::startGame() {
 		this->drawWindowElements();
 
 		gameWindow.display();
+	}
+}
+
+void Game::endGame() {
+	if (player.getLives() < 0) {
+		std::ofstream plik;
+		std::string nazwaPliku = 0;
+		time_t czasRozgrywki = time(0);
+		tm* data = localtime(&czasRozgrywki);
+		nazwaPliku += "Rozgrywka " + std::to_string(data->tm_hour) += " " + std::to_string(data->tm_min);
+
 	}
 }
