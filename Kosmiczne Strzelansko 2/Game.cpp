@@ -1,6 +1,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <Windows.h>
 #include <fstream>
 #include <iostream>
@@ -222,16 +224,18 @@ void Game::startGame() {
 		this->drawWindowElements();
 
 		gameWindow.display();
+		if (player.getLives() < 1) this->endGame();
 	}
 }
 
 void Game::endGame() {
-	if (player.getLives() < 0) {
+		gameWindow.close();
+		struct tm nowyCzas;
+		time_t aktualnyCzas = time(0);
 		std::ofstream plik;
-		std::string nazwaPliku = 0;
-		time_t czasRozgrywki = time(0);
-		tm* data = localtime(&czasRozgrywki);
-		nazwaPliku += "Rozgrywka " + std::to_string(data->tm_hour) += " " + std::to_string(data->tm_min);
-
-	}
+		std::string nazwaPliku = "";
+		localtime_s(&nowyCzas, &aktualnyCzas);
+		nazwaPliku += "Rozgrywka " + std::to_string(nowyCzas.tm_hour) += "_" + std::to_string(nowyCzas.tm_min) += "_" + std::to_string(nowyCzas.tm_sec) += ".txt";
+		plik.open(nazwaPliku, std::ios::out);
+		plik << "SCORE: " << std::to_string(player.getScore()) << " LIVES: " << std::to_string(player.getLives()) << " ASTEROIDS DESTROYED: " << std::to_string(player.getScore() / 25) << std::endl;
 }
