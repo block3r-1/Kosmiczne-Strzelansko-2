@@ -149,6 +149,8 @@ void Game::collisionDetection() {
 	FloatRect asteroidBox;
 	FloatRect laserBox;
 
+	if (asteroids == nullptr) throw 10;
+
 	// asteroidy i lasery
 	for (int i = 0; i < player.getLaserCount(); i++) {
 		laserBox = player.getLaserBounds(i);
@@ -192,6 +194,7 @@ void Game::collisionDetection() {
 }
 
 void Game::updateGameState(float deltaTime) {
+	if (deltaTime == 0) throw 15;
 	static bool shaking = false;
 	static float laserTimer = 0;
 	if (shaking == true) {
@@ -219,8 +222,18 @@ void Game::startGame() {
 		Time deltaTime = gameClock.restart();
 
 		this->getPlayerInput();
-		this->collisionDetection();
-		this->updateGameState(deltaTime.asSeconds());
+		try {
+			this->collisionDetection();
+		}
+		catch (int kodBledu) {
+			if (kodBledu == 10) std::cout << "Blad krytyczny! Pusty wskaznik na asteroidy!" << std::endl;
+		}
+		try {
+			this->updateGameState(deltaTime.asSeconds());
+		}
+		catch (int kodBledu) {
+			if (kodBledu == 15) std::cout << "Blad krytyczny! Czas klatki wyniosl 0!" << std::endl;
+		}
 		this->drawWindowElements();
 
 		gameWindow.display();
@@ -237,5 +250,6 @@ void Game::endGame() {
 		localtime_s(&nowyCzas, &aktualnyCzas);
 		nazwaPliku += "Rozgrywka " + std::to_string(nowyCzas.tm_hour) += "_" + std::to_string(nowyCzas.tm_min) += "_" + std::to_string(nowyCzas.tm_sec) += ".txt";
 		plik.open(nazwaPliku, std::ios::out);
+		if (plik.good() == false) throw 5;
 		plik << "SCORE: " << std::to_string(player.getScore()) << " LIVES: " << std::to_string(player.getLives()) << " ASTEROIDS DESTROYED: " << std::to_string(player.getScore() / 25) << std::endl;
 }
