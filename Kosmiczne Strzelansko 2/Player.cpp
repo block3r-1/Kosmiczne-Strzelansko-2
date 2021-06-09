@@ -23,7 +23,6 @@ void Player::generateLaserInstance(int laserSpeed) {
 
 	Entity laser(laserTexture, sprite.getPosition().x, sprite.getPosition().y, laserSpeed);
 	playerLasers.push_back(laser);
-
 }
 
 Player::Player() {

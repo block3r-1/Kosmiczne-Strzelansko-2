@@ -7,7 +7,6 @@ using namespace sf;
 void Resources::loadPlayerTexture(std::string textureName) {
 	std::string texturePath = "textures\\" + textureName + ".png";
 	playerTexture.loadFromFile(texturePath);
-
 }
 
 void Resources::loadSecondPlayerTexture(std::string textureName) {
